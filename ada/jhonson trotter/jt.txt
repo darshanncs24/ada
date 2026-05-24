@@ -1,0 +1,87 @@
+#include <stdio.h>
+
+#define MAX 20
+
+
+void prt(int a[], int n) {
+    int i;
+    for(i = 0; i < n; i++)
+        printf("%d ", a[i]);
+    printf("\n");
+}
+
+int mobile(int a[], int dir[], int n) {
+    int i;
+    int mobile_prev = 0;
+    int mobile_index = -1;
+
+    for(i = 0; i < n; i++) {
+
+        if(dir[i] == 0 && i != 0) {
+            if(a[i] > a[i - 1] && a[i] > mobile_prev) {
+                mobile_prev = a[i];
+                mobile_index = i;
+            }
+        }
+
+        if(dir[i] == 1 && i != n - 1) {
+            if(a[i] > a[i + 1] && a[i] > mobile_prev) {
+                mobile_prev = a[i];
+                mobile_index = i;
+            }
+        }
+    }
+
+    return mobile_index;
+}
+
+int main() {
+    int n, i, j;
+    int a[MAX], dir[MAX];
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    for(i = 0; i < n; i++) {
+        a[i] = i + 1;
+        dir[i] = 0;     
+    }
+
+    printf("Permutations:\n");
+    prt(a, n);
+
+    while(1) {
+
+        int m = mobile(a, dir, n);
+
+        if(m == -1)
+            break;
+
+        int swap_pos;
+
+        if(dir[m] == 0)
+            swap_pos = m - 1;
+        else
+            swap_pos = m + 1;
+
+        int temp = a[m];
+        a[m] = a[swap_pos];
+        a[swap_pos] = temp;
+
+        temp = dir[m];
+        dir[m] = dir[swap_pos];
+        dir[swap_pos] = temp;
+
+        m = swap_pos;
+
+        for(i = 0; i < n; i++) {
+            if(a[i] > a[m]) {
+                dir[i] = 1 - dir[i];
+            }
+        }
+
+        prt(a, n);
+    }
+
+    return 0;
+}

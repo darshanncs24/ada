@@ -1,0 +1,68 @@
+#include <stdio.h>
+
+#define MAX 20
+#define INF 999
+
+int prims(int n, int cost[MAX][MAX]) {
+    int visited[MAX] = {0};
+    int mincost = 0;
+    int i, j, u, v, min;
+
+    visited[1] = 1;  
+    int edges = 1;
+
+    while(edges < n) {
+        min = INF;
+        u = -1;
+        v = -1;
+
+        for(i = 1; i <= n; i++) {
+            if(visited[i]) {
+                for(j = 1; j <= n; j++) {
+                    if(!visited[j] && cost[i][j] < min) {
+                        min = cost[i][j];
+                        u = i;
+                        v = j;
+                    }
+                }
+            }
+        }
+
+        if(u != -1 && v != -1) {
+            visited[v] = 1;
+            mincost += min;
+
+            printf("%d - %d : %d\n", u, v, min);
+            edges++;
+        }
+        else {
+            break;
+        }
+    }
+
+    return mincost;
+}
+
+int main() {
+    int n, cost[MAX][MAX];
+    int i, j, result;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter cost adjacency matrix:\n");
+    for(i = 1; i <= n; i++) {
+        for(j = 1; j <= n; j++) {
+            scanf("%d", &cost[i][j]);
+
+            if(cost[i][j] == 0)
+                cost[i][j] = INF;
+        }
+    }
+
+    result = prims(n, cost);
+
+    printf("Minimum Cost = %d\n", result);
+
+    return 0;
+}

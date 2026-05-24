@@ -1,0 +1,82 @@
+#include <stdio.h>
+
+#define MAX 20
+#define INF 999
+
+int set[MAX];
+
+int find(int x) {
+    return set[x];
+}
+
+void union_set(int u, int v, int n) {
+    int i;
+    int old = set[v];
+
+    for(i = 1; i <= n; i++) {
+        if(set[i] == old)
+            set[i] = set[u];
+    }
+}
+
+int kruskal(int n, int cost[MAX][MAX]) {
+    int i, j, k = 0;
+    int min, u = 0, v = 0;
+    int mincost = 0;
+
+    for(i = 1; i <= n; i++)
+        set[i] = i;
+
+    while(k < n - 1) {
+        min = INF;
+
+        for(i = 1; i <= n; i++) {
+            for(j = 1; j <= n; j++) {
+                if(cost[i][j] < min) {
+                    min = cost[i][j];
+                    u = i;
+                    v = j;
+                }
+            }
+        }
+
+        int root_u = find(u);
+        int root_v = find(v);
+
+        if(root_u != root_v) {
+            printf("%d - %d : %d\n", u, v, min);
+            mincost += min;
+            union_set(u, v, n);
+            k++;
+        }
+
+        cost[u][v] = cost[v][u] = INF;
+    }
+
+    return mincost;
+}
+
+int main() {
+    int n, cost[MAX][MAX];
+    int i, j, result;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter cost adjacency matrix:\n");
+
+    for(i = 1; i <= n; i++) {
+        for(j = 1; j <= n; j++) {
+            scanf("%d", &cost[i][j]);
+
+            if(cost[i][j] == 0)
+                cost[i][j] = INF;
+        }
+    }
+
+    result = kruskal(n, cost);
+
+    printf("Minimum Cost = %d\n", result);
+
+    return 0;
+}

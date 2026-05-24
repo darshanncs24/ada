@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+#define MAX 20
+
+void knap(int n, double w[], double p[], double cap) {
+    double ratio[MAX];
+    double temp;
+    double profit = 0.0, rem = cap;
+    int i, j;
+
+    for(i = 0; i < n; i++)
+        ratio[i] = p[i] / w[i];
+
+    for(i = 0; i < n - 1; i++) {
+        for(j = 0; j < n - i - 1; j++) {
+            if(ratio[j] < ratio[j + 1]) {
+
+                temp = ratio[j];
+                ratio[j] = ratio[j + 1];
+                ratio[j + 1] = temp;
+
+                temp = w[j];
+                w[j] = w[j + 1];
+                w[j + 1] = temp;
+
+                temp = p[j];
+                p[j] = p[j + 1];
+                p[j + 1] = temp;
+            }
+        }
+    }
+
+    for(i = 0; i < n; i++) {
+        if(w[i] <= rem) {
+            rem -= w[i];
+            profit += p[i];
+        } else {
+            profit += p[i] * (rem / w[i]);
+            break;
+        }
+    }
+
+    printf("%.2f", profit);
+}
+
+int main() {
+    int n, i;
+    double w[MAX], p[MAX], cap;
+
+    printf("Enter number of items: ");
+    scanf("%d", &n);
+
+    printf("Enter weights:\n");
+    for(i = 0; i < n; i++)
+        scanf("%lf", &w[i]);
+
+    printf("Enter profits:\n");
+    for(i = 0; i < n; i++)
+        scanf("%lf", &p[i]);
+
+    printf("Enter capacity: ");
+    scanf("%lf", &cap);
+
+    knap(n, w, p, cap);
+
+    return 0;
+}
